@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growvest - Secure Your Financial Future Through Smart Tech Investments</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --border: #1e293b;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #34d399;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; }
+        .view { display: none; flex: 1; flex-direction: column; }
+        .view.active { display: flex; }
+
+        header { padding: 24px 0; display: flex; justify-content: space-between; align-items: center; }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.25rem; color: #fff; cursor: pointer; }
+        .logo-icon { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px; border-radius: 8px; color: var(--primary); }
+
+        .btn-primary { background-color: var(--primary); color: #000; font-weight: 600; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-primary:hover { background-color: var(--primary-hover); color: #fff; }
+        .btn-secondary { background-color: var(--card-bg); color: var(--text-main); font-weight: 600; padding: 12px 24px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; }
+
+        .hero-section { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; padding: 60px 0; }
+        .hero-content h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 20px; }
+        .hero-content h1 span { color: var(--primary); }
+        .hero-content p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 40px; }
+
+        .hero-card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .auth-wrapper { display: flex; justify-content: center; align-items: center; flex: 1; padding: 40px 0; }
+        .auth-card { background: var(--card-bg); border: 1px solid var(--border); padding: 40px; border-radius: 16px; width: 100%; max-width: 440px; }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+        .form-control { width: 100%; padding: 12px 16px; background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; color: #fff; }
+        
+        /* Dashboard & Tabs */
+        .dashboard-container { padding: 30px 0; flex: 1; display: flex; flex-direction: column; }
+        .tabs-list { display: flex; gap: 12px; border-bottom: 1px solid var(--border); margin-bottom: 30px; padding-bottom: 16px; }
+        .tab-menu-btn { background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .tab-menu-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        .lots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .lot-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+        .lot-specs { background: var(--bg-color); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 16px 0; }
+        .spec-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .spec-row span { color: var(--text-muted); }
+        .spec-row strong { color: var(--text-main); }
+
+        .withdraw-box-center { max-width: 480px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); padding: 32px; border-radius: 16px; width: 100%; }
+        .wallet-display { background: var(--bg-color); border: 1px solid var(--border); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 24px; }
+        .wallet-display h2 { font-size: 2rem; color: var(--primary); }
+
+        .purchased-item { background: var(--card-bg); border: 1px solid var(--border); padding: 20px 24px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--card-bg); border: 1px solid var(--border); padding: 32px; border-radius: 16px; max-width: 420px; width: 100%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="display: flex; flex-direction: column; min-height: 100vh;">
+        <header>
+            <div class="logo-area" onclick="switchView('home-view')">
+                <div class="logo-icon">⚡</div>
+                GROWVEST
+            </div>
+            <div id="top-nav-actions">
+                <button class="btn-primary" onclick="switchView('signup-view')">Get Started</button>
+            </div>
+        </header>
+
+        <!-- HOME VIEW -->
+        <div id="home-view" class="view active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>Secure Your Financial Future Through <span>Smart Tech Investments.</span></h1>
+                    <p>Streamlined gadget investments, instant tracking, and high-yield asset workflows for modern investors.</p>
+                    <div style="display: flex; gap: 16px;">
+                        <button class="btn-primary" onclick="switchView('signup-view')">Create Free Account</button>
+                        <button class="btn-secondary" onclick="switchView('login-view')">Sign In</button>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <h3>Welcome Bonus Balance</h3>
+                    <p style="font-size: 2.5rem; font-weight: bold; margin: 10px 0; color: #fff;">1,500 UGX</p>
+                    <span style="color: var(--primary);">Instant Credit Upon Registration</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOGIN VIEW -->
+        <div id="login-view" class="view">
+            <div class="auth-wrapper">
+                <div class="auth-card">
+                    <h2>Sign In</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Access requires a registered account.</p>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group"><label>Username</label><input type="text" id="login-user" class="form-control" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="login-pass" class="form-control" required></div>
+                        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Sign In</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">Need an account? <span style="color: var(--primary); cursor: pointer;" onclick="switchView('signup-view')">Register</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIGNUP VIEW -->
+        <div id="signup-view" class="view">
+            <div class="auth-wrapper">
+                <div class="auth-card">
+                    <h2>Create Account</h2>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Includes a starting balance of 1,500 UGX.</p>
+                    <form onsubmit="handleSignup(event)">
+                        <div class="form-group"><label>Username</label><input type="text" id="signup-user" class="form-control" required></div>
+                        <div class="form-group"><label>Mobile Number</label><input type="tel" id="signup-mobile" class="form-control" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="signup-pass" class="form-control" required></div>
+                        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Register Account</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">Have an account? <span style="color: var(--primary); cursor: pointer;" onclick="switchView('login-view')">Sign In</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard-view" class="view">
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: var(--card-bg); padding: 16px 24px; border: 1px solid var(--border); border-radius: 12px;">
+                    <div>Welcome back, <span id="display-user" style="color: var(--primary); font-weight: bold;"></span></div>
+                    <button class="btn-secondary" style="border-color: #ef4444; color: #ef4444; padding: 6px 14px; font-size: 0.85rem;" onclick="switchView('home-view')">Log Out</button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-list">
+                    <button class="tab-menu-btn active" onclick="switchTab('lots-tab', event)">Investment Lots</button>
+                    <button class="tab-menu-btn" onclick="switchTab('withdraw-tab', event)">Withdraw</button>
+                    <button class="tab-menu-btn" onclick="switchTab('purchased-tab', event)">Purchased Gadgets</button>
+                </div>
+
+                <!-- Tab 1: Investment Lots -->
+                <div id="lots-tab" class="tab-content">
+                    <div class="lots-grid" id="lots-container"></div>
+                </div>
+
+                <!-- Tab 2: Withdraw -->
+                <div id="withdraw-tab" class="tab-content" style="display: none;">
+                    <div class="withdraw-box-center">
+                        <h3 style="margin-bottom: 20px; text-align: center;">Account Withdrawal</h3>
+                        <div class="wallet-display">
+                            <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Available Balance</span>
+                            <h2 id="wallet-balance-text">1,500 UGX</h2>
+                        </div>
+                        <form onsubmit="handleWithdraw(event)">
+                            <div class="form-group">
+                                <label>Withdrawal Amount (UGX)</label>
+                                <input type="number" id="withdraw-amount" class="form-control" required placeholder="Enter amount to withdraw">
+                            </div>
+                            <div class="form-group">
+                                <label>Receiving Mobile Number</label>
+                                <input type="tel" id="withdraw-phone" class="form-control" required placeholder="Enter mobile number">
+                            </div>
+                            <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">Submit Withdrawal</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Purchased Gadgets -->
+                <div id="purchased-tab" class="tab-content" style="display: none;">
+                    <div id="purchased-container">
+                        <p style="color: var(--text-muted); text-align: center; padding: 40px;">No active investments yet. Choose a lot to start earning!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit & Push Notification Modal -->
+    <div id="deposit-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modal-step-1">
+                <h3>Authorize Investment Deduction</h3>
+                <p id="deposit-modal-text" style="color: var(--text-muted); margin: 12px 0; font-size: 0.95rem;"></p>
+                <div class="form-group" style="text-align: left; margin-top: 16px;">
+                    <label>Enter Phone Number to be Debited</label>
+                    <input type="tel" id="payer-phone" class="form-control" placeholder="e.g. 0770000000" required>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button class="btn-secondary" style="flex: 1;" onclick="closeDepositModal()">Cancel</button>
+                    <button class="btn-primary" style="flex: 1;" onclick="triggerPaymentPush()">Confirm & Pay</button>
+                </div>
+            </div>
+
+            <!-- Notification Step -->
+            <div id="modal-step-2" style="display: none; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 10px; color: var(--primary);">📲</div>
+                <h3>Check Your Phone</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin: 16px 0; line-height: 1.5;">
+                    A payment prompt has been sent to <strong id="sent-to-phone" style="color: #fff;"></strong>.<br>
+                    Please enter your mobile money <strong>PIN</strong> directly on your phone to complete the transaction.
+                </p>
+                <button class="btn-primary" style="width: 100%; margin-top: 10px; padding: 12px;" onclick="finishInvestment()">I Have Approved Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const investmentLots = [
+            { model: "iPhone 11 Pro Max", investment: 20000, returns: 500000, duration: "70 Days" },
+            { model: "iPhone 12 Pro Max", investment: 40000, returns: 600000, duration: "70 Days" },
+            { model: "iPhone 13 Pro Max", investment: 60000, returns: 700000, duration: "70 Days" },
+            { model: "iPhone 14 Pro Max", investment: 90000, returns: 800000, duration: "70 Days" },
+            { model: "iPhone 15 Pro Max", investment: 110000, returns: 900000, duration: "70 Days" },
+            { model: "iPhone 16 Pro Max", investment: 130000, returns: 1000000, duration: "70 Days" },
+            { model: "iPhone 17 Pro Max", investment: 150000, returns: 1100000, duration: "70 Days" }
+        ];
+
+        let currentUser = null;
+        let userBalance = 1500;
+        let userPurchasedAssets = [];
+        let selectedLotIndex = null;
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function switchTab(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.tab-menu-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const username = document.getElementById('signup-user').value;
+            const mobile = document.getElementById('signup-mobile').value;
+            const password = document.getElementById('signup-pass').value;
+
+            const res = await fetch('/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, mobile, password })
+            });
+            const data = await res.json();
+            alert(data.message);
+            if (data.success) switchView('login-view');
+        }
+
+        async function handleLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('login-user').value;
+    const password = document.getElementById('login-pass').value;
+
+    const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+        // Fallback checks handle both root and nested user objects safely
+        currentUser = data.username || data.user?.username || username;
+        userBalance = data.balance ?? data.user?.balance ?? 1500;
+
+        document.getElementById('display-user').innerText = currentUser;
+        document.getElementById('wallet-balance-text').innerText = Number(userBalance).toLocaleString() + " UGX";
+        renderLots();
+        switchView('dashboard-view');
+    } else {
+        alert(data.message);
+    }
+}
+
+        function renderLots() {
+            const container = document.getElementById('lots-container');
+            container.innerHTML = '';
+
+            investmentLots.forEach((lot, index) => {
+                const card = document.createElement('div');
+                card.className = 'lot-card';
+                card.innerHTML = `
+                    <div>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 4px;">${lot.model}</h3>
+                        <span style="font-size: 0.75rem; color: var(--primary); font-weight: bold; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 12px;">${lot.duration}</span>
+                        <div class="lot-specs">
+                            <div class="spec-row">
+                                <span>Investment</span>
+                                <strong>${lot.investment.toLocaleString()} UGX</strong>
+                            </div>
+                            <div class="spec-row">
+                                <span>Returns</span>
+                                <strong style="color: var(--primary);">${lot.returns.toLocaleString()} UGX</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="openDepositModal(${index})">Invest Now</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openDepositModal(index) {
+            selectedLotIndex = index;
+            const lot = investmentLots[index];
+            document.getElementById('deposit-modal-text').innerHTML = `You are investing in the <strong>${lot.model}</strong> for <strong>${lot.investment.toLocaleString()} UGX</strong>.`;
+            document.getElementById('modal-step-1').style.display = 'block';
+            document.getElementById('modal-step-2').style.display = 'none';
+            document.getElementById('payer-phone').value = '';
+            document.getElementById('deposit-modal').classList.add('active');
+        }
+
+        function closeDepositModal() {
+            document.getElementById('deposit-modal').classList.remove('active');
+            selectedLotIndex = null;
+        }
+
+        function triggerPaymentPush() {
+            const phone = document.getElementById('payer-phone').value;
+            if (!phone) {
+                alert("Please enter your mobile number.");
+                return;
+            }
+            document.getElementById('sent-to-phone').innerText = phone;
+            document.getElementById('modal-step-1').style.display = 'none';
+            document.getElementById('modal-step-2').style.display = 'block';
+        }
+
+        function finishInvestment() {
+            // Closes modal and shows the confirmation pending message as requested
+            closeDepositModal();
+            alert("Wait 5 to 10 minutes as your deposit is being confirmed.");
+        }
+
+        function handleWithdraw(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            const phone = document.getElementById('withdraw-phone').value;
+
+            if (!amount || !phone) {
+                alert("Please fill in all withdrawal fields.");
+                return;
+            }
+
+            if (amount > userBalance) {
+                alert("Insufficient account balance!");
+                return;
+            }
+
+            userBalance -= amount;
+            document.getElementById('wallet-balance-text').innerText = userBalance.toLocaleString() + " UGX";
+            alert(`Withdrawal request for ${amount.toLocaleString()} UGX has been submitted successfully to ${phone}!`);
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
